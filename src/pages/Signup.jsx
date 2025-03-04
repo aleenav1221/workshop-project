@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { getFirestore, collection, addDoc } from "../firebase/config";
-import { getAuth, createUserWithEmailAndPassword } from "../firebase/config";
-import { auth } from '../firebase/config';
-import { db } from '../firebase/config';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
+
 // Function to handle ImgBB Image Upload
 const uploadImageToImgBB = async (imageFile) => {
   const API_KEY = 'a58c530da3db7f523fb3a9a37ba30932'; // Replace with your ImgBB API key
@@ -17,7 +17,7 @@ const uploadImageToImgBB = async (imageFile) => {
     const data = await response.json();
     return data.data.url; // Returning the image URL
   } catch (error) {
-    console.error("Error uploading image:", error);
+    console.error('Error uploading image:', error);
     return null;
   }
 };
@@ -68,13 +68,14 @@ const Signup = () => {
       profilePicUrl = await uploadImageToImgBB(formData.profilePic);
     }
 
-    // Create a user in Firebase Authentication
     try {
+      // Create a user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = userCredential.user;
 
-      // Store user data in Firestore
-      const docRef = await addDoc(collection(db, 'users'), {
+      // Store user data in Firestore with email as document ID
+      const userRef = doc(db, 'users', formData.email);
+      await setDoc(userRef, {
         email: formData.email,
         username: formData.username,
         name: formData.name,
@@ -88,10 +89,10 @@ const Signup = () => {
         userId: user.uid,
       });
 
-      console.log("User signed up and details stored:", docRef.id);
+      console.log('User signed up and details stored:', user.email);
       alert('Signup successful!');
     } catch (error) {
-      console.error("Error signing up user:", error.message);
+      console.error('Error signing up user:', error.message);
       alert('Error signing up!');
     }
 
@@ -256,6 +257,6 @@ const Signup = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Signup;

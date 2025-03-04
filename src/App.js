@@ -6,7 +6,7 @@ import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import WorkshopApplication from './pages/Application';
 import HomePage from './pages/Home';
-
+import Society from './pages/Society';
 const ProtectedRoute = ({ element }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const ProtectedRoute = ({ element }) => {
       setLoading(false);
 
       if (user?.email === "ieee@sahrdaya.ac.in") {
-        navigate('/application', { replace: true });
+        navigate('/society', { replace: true });
       }
     });
 
@@ -38,6 +38,8 @@ const App = () => {
         <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
         <Route path="/application" element={<ProtectedRoute element={<WorkshopApplication />} />} />
         <Route path="/home" element={<ProtectedRoute element={<HomePage />} />} />
+        <Route path="/society" element={<ProtectedRoute element={<Society />} />} />
+
       </Routes>
     </Router>
   );
